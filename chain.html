@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head lang="en" profile="http://www.w3.org/2005/10/profile">
+
+    <script src="libraries/angularjs-1.3.2/angular.min.js"></script>
+    <script src="libraries/angularjs-1.3.2/angular-resource.min.js"></script>
+    <script src="libraries/angularjs-1.3.2/angular-route.min.js"></script>
+    <script src="libraries/bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
+    <script src="libraries/angularjs-1.3.2/angular-sanitize.min.js"></script>
+    <script src="libraries/angularjs-1.3.2/angular-animate.min.js"></script>
+
+
+    <script>
+
+
+        var module = angular.module('MyApp', []);
+
+
+        module.controller('navigationCtrl', function ($scope, $timeout, $q) {
+            $scope.abc = 'Hello';
+
+            function calc(modules, index) {
+                var d = $q.defer();
+                console.log('start ' + modules[index]);
+                $timeout(function () {
+                    console.log('finished ' + modules[index]);
+                    d.resolve({modules: modules, index: index});
+                }, 1000);
+                return d.promise;
+            }
+
+
+            function calculateAll(modules, index) {
+                index = typeof index !== 'undefined' ? index : 0;
+                calc(modules, index).
+                        then(function (res) {
+                            if (res.modules.length > res.index + 1) {
+                                calculateAll(res.modules, res.index + 1);
+                            }
+                        });
+            }
+
+            calculateAll(["module1", "module2", "module3", "module4"]);
+        });
+
+    </script>
+
+</head>
+
+<body ng-app="MyApp" ng-controller="navigationCtrl">
+{{abc}}
+</body>
+
+</html>
